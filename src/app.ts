@@ -4,7 +4,6 @@ import * as Static from '@elhedranorg/cdk-static-site';
 import * as path from 'path';
 
 const app = new Core.App();
-const siteName = 'devopssample';
 
 class MainStack extends Core.Stack {
     constructor(scope: Core.Construct, id: string, props?: Core.StackProps) {
@@ -13,13 +12,13 @@ class MainStack extends Core.Stack {
         new Static.StaticSite(this, 'site', {
             zoneDomain: 'elhedran.com',
             siteDomain: 'devopssample.elhedran.com',
-            siteName,
+            siteName: 'devops-sample-site',
             assetPath: path.resolve('assets', 'site')
         });
     }
 }
 
-new MainStack(app, 'devopssample', {
+new MainStack(app, 'devops-sample', {
     env: {
         account: '057191276549',
         region: 'us-east-1'
