@@ -3,24 +3,32 @@ import * as Core from '@aws-cdk/core';
 import * as Static from '@elhedranorg/cdk-static-site';
 import * as path from 'path';
 
-const app = new Core.App();
-
-class MainStack extends Core.Stack {
-    constructor(scope: Core.Construct, id: string, props?: Core.StackProps) {
-        super(scope, id, props);
-
-        new Static.StaticSite(this, 'site', {
-            zoneDomain: 'elhedran.com',
-            siteDomain: 'devopssample.elhedran.com',
-            siteName: 'devops-sample-site',
-            assetPath: path.resolve('assets', 'site')
-        });
+const app = new Core.App({
+    context: {
+        envTag: process.env.ENVIRONMENT || 'DEV'
     }
-}
+});
 
-new MainStack(app, 'devops-sample', {
+const envTag = app.node.tryGetContext('envTag');
+const name = `devopssample${envTag}`;
+const zoneDomain = 'elhedran.com';
+const siteDomain = `${name}.${zoneDomain}`;
+
+const stack = new Core.Stack(app, name, {
     env: {
         account: '057191276549',
         region: 'us-east-1'
     }
+});
+
+new Static.StaticSite(stack, 'site', {
+    zoneDomain,
+    siteDomain,
+    siteName: `${name}-site`,
+    assetPath: path.resolve('assets', 'site')
+});
+
+new Core.CfnOutput(stack, 'site-output', {
+    exportName: `${name}-siteDomain`,
+    value: siteDomain
 });
