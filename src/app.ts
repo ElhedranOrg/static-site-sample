@@ -12,7 +12,7 @@ const app = new Core.App({
 const envTag = app.node.tryGetContext('envTag');
 const name = `devopssample${envTag}`;
 const zoneDomain = 'elhedran.com';
-const siteDomain = `${name}.${zoneDomain}`;
+const siteDomain = `${name.toLowerCase()}.${zoneDomain}`;
 
 const stack = new Core.Stack(app, name, {
     env: {
@@ -32,3 +32,5 @@ new Core.CfnOutput(stack, 'site-output', {
     exportName: `${name}-siteDomain`,
     value: siteDomain
 });
+
+app.node.applyAspect(new Core.Tag("PURPOSE", "demo"));
